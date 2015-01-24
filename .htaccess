@@ -1,0 +1,7 @@
+RewriteEngine On
+
+# every request goes to index.php - a centralized request processor
+# for webpages and ajax calls too
+#
+RewriteCond %{REQUEST_URI} !^/files/(.*)$
+RewriteRule  ^(.*)$ index.php?%{QUERY_STRING} [NE]
