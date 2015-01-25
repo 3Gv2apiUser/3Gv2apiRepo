@@ -16,7 +16,7 @@ namespace sys;
 //   and it provides some standard common methods
 //
 //============================================================+
-interface ServerComponentInterface
+interface ServerObjectInterface
 {
     // some "on" event so we don't need to overload some standard methods
     public function onCreate();
@@ -33,9 +33,9 @@ interface ServerComponentInterface
 
 
 /*
- * Class ServerComponent
+ * Class ServerObject
  */
-abstract class ServerComponent implements ServerComponentInterface
+abstract class ServerObject implements ServerObjectInterface
 {
 
     protected

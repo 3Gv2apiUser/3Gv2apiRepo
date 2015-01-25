@@ -9,7 +9,7 @@ namespace sys;
 /*
  * Class Component
  */
-class Component extends \sys\ServerComponent
+class Component extends \sys\ServerObject
 {
     /**
      */
