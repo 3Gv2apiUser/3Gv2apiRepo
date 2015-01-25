@@ -1,0 +1,11 @@
+RewriteEngine On
+
+# every request goes to index.php - a centralized request processor
+# for webpages and ajax calls too
+#
+RewriteCond %{REQUEST_URI} !^/img/(.*)$
+RewriteCond %{REQUEST_URI} !^/js/(.*)$
+RewriteCond %{REQUEST_URI} !^/css/(.*)$
+RewriteCond %{REQUEST_URI} !^/htm/(.*)$
+RewriteCond %{REQUEST_URI} !^/data/(.*)$
+RewriteRule  ^(.*)$ index.php?%{QUERY_STRING} [NE]
