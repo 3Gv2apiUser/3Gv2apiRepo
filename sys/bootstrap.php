@@ -1,8 +1,11 @@
 <?php
 
-/*
- * some  defines
- */
+/*************************************************************�
+ *  @package  Manhertz
+ *  @author   Tamas Manhertz
+ *  @version  V0.99.20150305
+ *************************************************************/
+
 
 /*
  *  This is just a very basic and very simple time measurement.
@@ -10,13 +13,16 @@
 $iTime_start = microtime(true);
 
 /********************************************************************************
- *
- * a tiny PSR-0 compliant autoloader - the most lightweight I've ever seen
+ * a tiny PSR-0 compliant autoloader
  * but we use SplLoadClass too for specific subsystems, libraries
  */
-spl_autoload_register(function($c){@include preg_replace('#\\\|_(?!.+\\\)#','/',$c).'.php';});
-// First we load the SplClassLoader
-require_once( ROOT . 'libs/SplClassLoader.php' );
+spl_autoload_register(function($c) {
+	$sFilename = ROOT . preg_replace('#\\\|_(?!.+\\\)#','/',$c).'.php';
+	if (file_exists($sFilename)) {
+		require_once $sFilename;
+	}
+});
+
 // Second we load our batch autoloader that contains the autoloading configurations for the used libraries
 require_once( ROOT . 'sys/Autoloader.php' );
 

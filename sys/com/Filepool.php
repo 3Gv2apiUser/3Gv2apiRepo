@@ -1,10 +1,10 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Pylon
- * Date: 2015.03.14.
- * Time: 16:15
- */
+/*************************************************************�
+ *  @package  Manhertz
+ *  @author   Tamas Manhertz
+ *  @version  V0.99.20150305
+ *************************************************************/
+
 
 namespace sys\com;
 

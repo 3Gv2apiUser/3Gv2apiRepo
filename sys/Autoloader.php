@@ -1,11 +1,13 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Pylon
- * Date: 2015.01.25.
- * Time: 12:16
- */
+/*************************************************************�
+ *  @package  Manhertz
+ *  @author   Tamas Manhertz
+ *  @version  V0.99.20150305
+ *************************************************************/
 namespace sys;
+
+// First we load the SplClassLoader
+require_once( ROOT . 'libs/SplClassLoader.php' );
 
 /**
  * Class Autoloader
@@ -32,8 +34,9 @@ class Autoloader {
     public function __construct() {
         foreach( $this->paths as $name => $path ) {
             if (is_dir( ROOT . $path)) {
-                $this->paths[$name] = new \SplClassLoader( $name, ROOT . $path );
-                $this->paths[$name]->register();
+	            $oAutoloader = new \SplClassLoader( $name, ROOT . $path );
+                $this->paths[$name] = $oAutoloader;
+	            $oAutoloader->register();
             } else {
                 throw new \Exception(sprintf(self::AUTOLOADER_DIRECTORY_PATH_DOES_NOT_EXIST, $path, $name ));
             }
@@ -41,7 +44,8 @@ class Autoloader {
     }
 
     public function __destruct() {
-        foreach( $this->paths as $name => $autoloaderObject ) {
+	    /** @var \SplClassLoader $autoloaderObject */
+        foreach( $this->paths as $autoloaderObject ) {
             if (get_class( $autoloaderObject ) == "SplClassLoader" ) {
                 $autoloaderObject->unregister();
             }

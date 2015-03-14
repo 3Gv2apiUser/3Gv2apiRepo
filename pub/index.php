@@ -13,7 +13,7 @@
  */
 
 define('ROOT', dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR);
-
+error_reporting(E_ALL);
 /**
  * starting bootstrapping
  */
