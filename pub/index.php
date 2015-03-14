@@ -14,8 +14,6 @@
 
 define('ROOT', dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR);
 
-echo "rrr";
-
 /**
  * starting bootstrapping
  */

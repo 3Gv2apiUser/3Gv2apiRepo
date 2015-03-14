@@ -3,7 +3,11 @@
 /*
  * some  defines
  */
-define ('SYSTEM_MAINDIR', dirname(__FILE__) . DIRECTORY_SEPARATOR );
+
+/*
+ *  This is just a very basic and very simple time measurement.
+ */
+$iTime_start = microtime(true);
 
 /********************************************************************************
  *
@@ -19,9 +23,13 @@ require_once( ROOT . 'sys/Autoloader.php' );
 // creating autoload class to create all necessery spl autoloader
 $autoloader = new \sys\Autoloader();
 
-// some libraries needs extra initializations
-require_once( ROOT . "libs/adodb5/adodb.inc.php" );
+/********************************************************************************
+ *  starting the system
+ */
+$oSystem = new \sys\System();
 
+//  starting the system
+$oSystem->initialize();
 
 /********************************************************************************
  *  Monologger
@@ -33,11 +41,8 @@ $output = "%datetime% > %level_name% > %message% %context% %extra%\n";
 $streamHandler->setFormatter(new \Monolog\Formatter\LineFormatter($output, $dateFormat));
 $logger->pushHandler($streamHandler);
 
-$oSystem = new \sys\System();
 $logger->log(100, "=============== STARTING: ".$_SERVER['REQUEST_URI']);
 
-//  starting the system
-$oSystem->initialize();
 $logger->log(100, '{index} SYSTEM has been initialized.');
 
 //$db = NewADOConnection("mysql://wpv2api:3gv2api@192.168.14.1/mp_manhertz_api");

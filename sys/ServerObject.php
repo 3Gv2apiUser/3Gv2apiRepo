@@ -7,82 +7,72 @@
 namespace sys;
 
 //============================================================+
-// ServerComponent
+// ServerObject
 //
-// Description : abstract class for component definitions
+// Description : base abstract class for any server objects
 //
-//  Definition: Component
+//  Definition: ServerObject
 //    Such an object that encapsulates special services/functions
 //   and it provides some standard common methods
 //
 //============================================================+
 interface ServerObjectInterface
 {
-    // some "on" event so we don't need to overload some standard methods
-    public function onCreate();
-    public function onInitialize();
-    public function onFinalize();
-    public function onDestroy();
-
-    //  component handling
-    public function createComponent($sComponentName);
-    public function getComponent($sComponentName);
-    public function setInitialized();
-    public function isInitialized();
+	public function initialize();
+	public function isToInitializing();
+	public function finalize();
 }
 
 
 /*
  * Class ServerObject
  */
-abstract class ServerObject implements ServerObjectInterface
-{
-
+abstract class ServerObject implements \sys\ServerObjectInterface {
+	/***********************************************
+	 *   PROPERTIES
+	 ***********************************************/
     protected
         /**
-         *  The central system component object
-         * @var object
-         */
-        $oSystem = null;
-
-    protected
-        /**
-         *  whether the component has already been initialized
+         *  whether the component still has to be initialized
          * @var boolean
          */
-        $bInitialized = false;
+        $bToInitializing = true;
 
+	/***********************************************
+	 *   CONSTRUCT
+	 ***********************************************/
+	public function __construct() {
+		$this->onCreate();
+	}
 
-    abstract public function onCreate();
-    abstract public function onInitialize();
-    abstract public function onFinalize();
-    abstract public function onDestroy();
+	public function __destroy() {
+		$this->onDestroy();
+	}
 
-    abstract public function createComponent($sComponentName);
-    abstract public function getComponent($sComponentName);
+	/***********************************************
+	 *   PROTECTED METHODS
+	 ***********************************************/
+	final protected function unsetToInitializing() {
+		$this->bToInitializing = false;
+	}
 
-    public function __construct() {
-        $this->onCreate();
-    }
-    public function __destroy() {
-        $this->onDestroy();
-    }
-    public function initialize()
-    {
-        $this->setInitialized();
+    abstract protected function onCreate();
+    abstract protected function onInitialize();
+    abstract protected function onFinalize();
+    abstract protected function onDestroy();
+
+	/***********************************************
+	 *   PUBLIC METHODS
+	 ***********************************************/
+    final public function initialize() {
+	    $this->unsetToInitializing();
         $this->onInitialize();
     }
-    public function finalize()
-    {
+	final public function finalize() {
         $this->onFinalize();
     }
-    public function setInitialized()
-    {
-        $this->bInitialized = true;
-    }
-    public function isInitialized()
-    {
-        return $this->bInitialized;
+    final public function isToInitializing() {
+        return $this->bToInitializing;
     }
 
 }

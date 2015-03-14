@@ -2,18 +2,21 @@
 /**
  * Created by PhpStorm.
  * User: Pylon
- * Date: 2015.01.25.
- * Time: 19:36
+ * Date: 2015.03.14.
+ * Time: 12:15
  */
 
-namespace sys\com;
+namespace sys;
 
+interface WebComponentInterface {
+
+}
 
 /**
- * Class NULL
- * @package sys\com
+ * Class WebComponent
+ * @package sys
  */
-class NULL extends \sys\ServerComponent {
+class WebComponent extends \sys\ServerComponent implements WebComponentInterface {
 
 	/***********************************************
 	 *   PROPERTIES
@@ -26,6 +29,20 @@ class NULL extends \sys\ServerComponent {
 	/***********************************************
 	 *   PROTECTED METHODS
 	 ***********************************************/
+
+	/**
+	 * the initialization of the system will create the necessery components
+	 */
+	protected function onInitialize() {
+
+		parent::onInitialize();
+
+		$this->createComponent("URL");
+//		$this->createComponent("Session");
+//		$this->createComponent("Router");
+//		$this->createComponent("Buffer");
+
+	}
 
 	/***********************************************
 	 *   PUBLIC METHODS
