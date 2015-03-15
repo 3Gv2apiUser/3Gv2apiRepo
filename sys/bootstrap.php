@@ -12,27 +12,60 @@
  */
 $iTime_start = microtime(true);
 
-/********************************************************************************
- * a tiny PSR-0 compliant autoloader
- * but we use SplLoadClass too for specific subsystems, libraries
- */
-spl_autoload_register(function($c) {
-	$sFilename = ROOT . preg_replace('#\\\|_(?!.+\\\)#','/',$c).'.php';
-	if (file_exists($sFilename)) {
-		require_once $sFilename;
-	}
-});
+// we need some system classes to continue
+require_once ROOT . 'sys/ServerObject.php';
+require_once ROOT . 'sys/SystemBase.php';
 
-// Second we load our batch autoloader that contains the autoloading configurations for the used libraries
+$sSystemClassname = "\\sys\\" . SYSTEM_ENTRY_POINT . 'System';
+$sSystemClassFilename = ROOT . 'sys/pool/entry/' . SYSTEM_ENTRY_POINT . 'System.php';
+if (!file_exists($sSystemClassFilename)) {
+	throw new Exception(
+		"SYSTEM FATAL: no system class file can be loaded for " . SYSTEM_ENTRY_POINT . " entry point."
+	);
+}
+require_once $sSystemClassFilename;
+
+// First we load our batch autoloader that contains the autoloading configurations for the used libraries
 require_once( ROOT . 'sys/Autoloader.php' );
 
 // creating autoload class to create all necessery spl autoloader
 $autoloader = new \sys\Autoloader();
 
+// system component autoloader
+spl_autoload_register(
+	function($sClassname) {
+		$sFilename = preg_replace( '#\\\|_(?!.+\\\)#','/', $sClassname ) . '.php';
+
+		$sSystemClassname = "\\sys\\" . SYSTEM_ENTRY_POINT . "System";
+		/** @var $sSystemClassname \sys\SystemBase */
+		if ($system = $sSystemClassname::getInstance()) {
+			//  is the filepool already exists?
+			/** @var $system \sys\SystemBase */
+			if ($system->isComponent('Filepool')) {
+				/** @var $oFilepool \sys\com\Filepool */
+				$oFilepool = $system->getComponent('Filepool');
+				$sFilepoolFilename = str_replace("sys/", "", $sFilename);
+				$oFilepoolResult = $oFilepool->getPath($sFilepoolFilename);
+				if ($oFilepoolResult->getFileFound()) {
+					$sFilename = $oFilepoolResult->getFilepoolPath() . $sFilepoolFilename;
+				}
+			}
+
+		}
+
+		$sFullpath = ROOT . $sFilename;
+		if (file_exists($sFullpath)) {
+			require_once $sFullpath;
+		}
+	}
+);
+
+
 /********************************************************************************
  *  starting the system
  */
-$oSystem = new \sys\System();
+/** @var $oSystem \sys\SystemBase */
+$oSystem = new $sSystemClassname();
 
 //  starting the system
 $oSystem->initialize();

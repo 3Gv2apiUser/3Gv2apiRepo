@@ -24,7 +24,6 @@ class Autoloader {
      * @var array of strings
      */
     protected $paths = array(
-        "sys"       =>  "",
         "Psr"       =>  "libs",
         "Monolog"   =>  "libs",
         "adodb"     =>  "libs/adodb5",

@@ -25,7 +25,7 @@ define('ROOT', dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR);
  *      - web
  *      - batch
  */
-define('SYSTEM_ENTRY_POINT', 'api');
+define('SYSTEM_ENTRY_POINT', 'batch');
 
 /**
  * starting bootstrap

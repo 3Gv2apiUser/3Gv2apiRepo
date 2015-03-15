@@ -8,7 +8,7 @@
 namespace sys\com;
 
 // adodb library needs extra initializations but only once at the first time
-require_once( ROOT . "libs/adodb5/adodb.inc.php" );
+require_once(ROOT . "libs/adodb5/adodb.inc.php");
 
 /**
  * Class Database

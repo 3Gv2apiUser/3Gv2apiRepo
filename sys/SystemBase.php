@@ -6,24 +6,33 @@
  *************************************************************/
 namespace sys;
 
-use \sys\com\Filepool;
 /*
  * Class System
  */
-interface SystemInterface
+interface SystemBaseInterface
 {
+
+	public static function getInstance();
+
 	//  component handling
 	public function createComponent($sComponentName, $sComponentType = null, $bNULLComponent = true);
-	public function getComponent($sComponentName);
+	public function getComponent($sComponentName, $bReturnNULLComponent = true);
 	public function isComponent($sComponentName);
 
 }
 
-class System extends \sys\ServerObject implements \sys\SystemInterface
+class SystemBase extends \sys\ServerObject implements \sys\SystemBaseInterface
 {
 	/***********************************************
 	 *   PROPERTIES
 	 ***********************************************/
+	protected static
+		/**
+		 * Singleton construction.
+		 * @var SystemBase
+		 */
+		$_oInstance;
+
 	protected
 		/**
 		 *  Component storage, to store all created component objects
@@ -39,6 +48,9 @@ class System extends \sys\ServerObject implements \sys\SystemInterface
 	 * this is special for System component, it stores itself, no parameters
 	 */
 	public function __construct() {
+		// storing the object as singleton
+		if (!isset(self::$_oInstance))  self::$_oInstance = $this;
+
 		parent::__construct();
 	}
 
@@ -60,6 +72,7 @@ class System extends \sys\ServerObject implements \sys\SystemInterface
 		$this->createComponent("NULL");
 //		$this->createComponent("LOG");
 //		$this->createComponent("Config");
+		$this->createComponent("Filepool");
 		$this->createComponent("Database");
 
 		$this->initializeComponents();
@@ -104,6 +117,9 @@ class System extends \sys\ServerObject implements \sys\SystemInterface
 	 *   PUBLIC METHODS
 	 ***********************************************/
 
+	final public static function getInstance() {
+		return self::$_oInstance;
+	}
 	/**
 	 * Creates a component. The $sComponentName will be a unique name (identifier) in the system. If the
 	 * type has not been given, it will use the same as the given component name. The optional NULLComponent
@@ -123,26 +139,14 @@ class System extends \sys\ServerObject implements \sys\SystemInterface
 			return $this->aComponents[$sComponentName];
 		}
 
-		$sPath = "";
-
-		//  is the filepool already exists?
-		if ($this->isComponent("FILEPOOL")) {
-			/** @var $oFilepool Filepool */
-			$oFilepool = $this->getComponent("FILEPOOL");
-			$sPath = $oFilepool->getPath();
-		}
-
-		//  we check in the core sys components whether we can load it from there
-		if (!class_exists("\\sys\\com\\".$sPath.$sComponentName, true)) {
+		$sClassname = "\\sys\\com\\" . $sComponentName;
+		if (!class_exists($sClassname)) {
 			// if autoloader couldn't load the component class file, warning will be triggered and NULL component will be generated
-			$sComponentName = "NULL";
-
-		} else {
-			$sComponentName = "\\sys\\com\\".$sPath.$sComponentName;
+			return $this->getComponent("NULL");
 		}
 
 		// stores the component
-		$_oComponent = new $sComponentName($this);
+		$_oComponent = new $sClassname($this);
 		$this->aComponents[$sComponentName] = $_oComponent;
 		return $_oComponent;
 	}
@@ -159,23 +163,27 @@ class System extends \sys\ServerObject implements \sys\SystemInterface
 	}
 
 	/**
+	 * Returns the component from the system that is called like '$sComponentName'.
+	 * If $bCreateNULLComponent is true (by default) then the NULL component will be returned if a component
+	 * with the given name does not exist in the system.
 	 *
-	 *
-	 * @param $sComponentName
+	 * @param string $sComponentName
+	 * @param bool $bCreateNULLComponent
 	 *
 	 * @return \sys\ServerComponent
 	 */
-	final public function getComponent($sComponentName) {
-		if (array_key_exists($sComponentName, $this->aComponents))
+	final public function getComponent($sComponentName, $bReturnNULLComponent = true) {
+		if (array_key_exists($sComponentName, $this->aComponents)) {
 			return $this->aComponents[$sComponentName];
-		else
-		{
-			if (!array_key_exists("NULL", $this->aComponents))
-			{
+		} else {
+			if (!array_key_exists("NULL", $this->aComponents)) {
 				$this->createComponent("NULL");
 			}
-			return $this->aComponents["NULL"];
+			if ($bReturnNULLComponent) {
+				return $this->aComponents["NULL"];
+			}
 		}
+		return null;
 	}
 
 }

@@ -23,7 +23,7 @@ class ServerComponent extends \sys\ServerObject implements \sys\ServerComponentI
 	protected
 		/**
 		 *  The central system object
-		 * @var \sys\System
+		 * @var \sys\SystemBase
 		 */
 		$oSystem = null;
 
@@ -32,7 +32,7 @@ class ServerComponent extends \sys\ServerObject implements \sys\ServerComponentI
 	 ***********************************************/
 	/**
      */
-	public function __construct(\sys\System $oSystem) {
+	public function __construct(\sys\SystemBase $oSystem) {
 		if (!is_object($oSystem)) {
 			throw new \Exception(
 				$this->getComponentName() . " can't be created, no System has been given."
@@ -49,8 +49,8 @@ class ServerComponent extends \sys\ServerObject implements \sys\ServerComponentI
 	final protected function createComponent($sComponentName, $sComponentType = null, $bNULLComponent = true) {
 		return $this->oSystem->createComponent($sComponentName, $sComponentType, $bNULLComponent);
 	}
-	final protected function getComponent($sComponentName) {
-		return $this->oSystem->getComponent($sComponentName);
+	final protected function getComponent($sComponentName, $bReturnNULLComponent = true) {
+		return $this->oSystem->getComponent($sComponentName, $bReturnNULLComponent);
 	}
 	final protected function isComponent($sComponentName) {
 		return $this->oSystem->isComponent($sComponentName);
