@@ -5,7 +5,7 @@
  *  @version  V0.99.20150305
  *************************************************************/
 
-namespace sys;
+namespace sys\com\api;
 
 interface apiSystemInterface {
 
@@ -15,6 +15,16 @@ interface apiSystemInterface {
  * Class System
  * @package sys\entry\api
  */
-class apiSystem extends SystemBase implements apiSystemInterface {
+class System extends \sys\SystemBase implements apiSystemInterface {
 
-} 
+	protected function onInitialize() {
+
+		parent::onInitialize();
+
+//		$this->createComponent("Session");
+//		$this->createComponent("Router");
+//		$this->createComponent("Buffer");
+
+	}
+
+}

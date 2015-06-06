@@ -70,10 +70,11 @@ class SystemBase extends \sys\ServerObject implements \sys\SystemBaseInterface
 	 */
 	protected function onInitialize() {
 		$this->createComponent("NULL");
+		$this->createComponent("URL");
 //		$this->createComponent("LOG");
-//		$this->createComponent("Config");
 		$this->createComponent("Filepool");
-		$this->createComponent("Database");
+		$this->createComponent("Config");
+//		$this->createComponent("Database");
 
 		$this->initializeComponents();
 	}
@@ -138,14 +139,21 @@ class SystemBase extends \sys\ServerObject implements \sys\SystemBaseInterface
 		if (array_key_exists($sComponentName, $this->aComponents)) {
 			return $this->aComponents[$sComponentName];
 		}
+		if ($sComponentType == null) {
+			$sComponentType = $sComponentName;
+		}
 
-		$sClassname = "\\sys\\com\\" . $sComponentName;
-		if (!class_exists($sClassname)) {
+		$sClassnameBase = "\\sys\\com\\" ;
+		if (class_exists($sClassnameBase . SYSTEM_ENTRY_POINT . "\\" . $sComponentType)) {
+			$sClassnameBase = $sClassnameBase . SYSTEM_ENTRY_POINT . "\\";
+		} elseif (!class_exists($sClassnameBase . $sComponentType)) {
 			// if autoloader couldn't load the component class file, warning will be triggered and NULL component will be generated
 			return $this->getComponent("NULL");
 		}
 
-		// stores the component
+		// creates the component
+		$sClassname = $sClassnameBase . $sComponentType;
+		/** @var \sys\ServerComponent $_oComponent */
 		$_oComponent = new $sClassname($this);
 		$this->aComponents[$sComponentName] = $_oComponent;
 		return $_oComponent;
@@ -168,7 +176,7 @@ class SystemBase extends \sys\ServerObject implements \sys\SystemBaseInterface
 	 * with the given name does not exist in the system.
 	 *
 	 * @param string $sComponentName
-	 * @param bool $bCreateNULLComponent
+	 * @param bool $bReturnNULLComponent
 	 *
 	 * @return \sys\ServerComponent
 	 */

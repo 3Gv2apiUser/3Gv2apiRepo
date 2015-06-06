@@ -36,11 +36,6 @@ class WebComponent extends \sys\ServerComponent implements WebComponentInterface
 
 		parent::onInitialize();
 
-		$this->createComponent("URL");
-//		$this->createComponent("Session");
-//		$this->createComponent("Router");
-//		$this->createComponent("Buffer");
-
 	}
 
 	/***********************************************

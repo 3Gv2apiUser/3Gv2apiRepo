@@ -5,16 +5,21 @@
  *  @version  V0.99.20150305
  *************************************************************/
 
-namespace sys;
+namespace sys\com\batch;
 
-interface wwwSystemInterface {
+interface batchSystemInterface {
 
 }
 
 /**
  * Class System
- * @package sys\entry\api
+ * @package sys\entry\batch
  */
-class wwwSystem extends SystemBase implements wwwSystemInterface {
+class System extends \sys\SystemBase implements batchSystemInterface {
 
-} 
+	protected function onInitialize() {
+
+		parent::onInitialize();
+
+	}
+}

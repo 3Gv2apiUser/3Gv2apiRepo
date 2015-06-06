@@ -33,7 +33,7 @@ interface FilepoolInterface {
 interface FilepoolResultInterface {
 
 	public function setFileFound($fileFound);
-	public function getFileFound();
+	public function isFileFound();
 	public function setFilePath($filePath);
 	public function getFilePath();
 	public function setFilename($sFilename);
@@ -54,18 +54,19 @@ interface FilepoolResultInterface {
  */
 class Filepool extends \sys\ServerComponent implements FilepoolInterface {
 
-	CONST FILEPOOL_LEVEL_FORCE = 0;
-	CONST FILEPOOL_LEVEL_USER = 1;
-	CONST FILEPOOL_LEVEL_GROUP = 2;
-	CONST FILEPOOL_LEVEL_ENTRY = 3;
+	CONST FILEPOOL_LEVEL_FORCE  = 0;
+	CONST FILEPOOL_LEVEL_USER   = 1;
+	CONST FILEPOOL_LEVEL_GROUP  = 2;
+	CONST FILEPOOL_LEVEL_ENTRY  = 3;
 	CONST FILEPOOL_LEVEL_GLOBAL = 9;
 
-	CONST FILEPOOL_CATEGORY_PHP = 'php';
-	CONST FILEPOOL_CATEGORY_HTM = 'htm';
-	CONST FILEPOOL_CATEGORY_GFX = 'gfx';
-	CONST FILEPOOL_CATEGORY_CSS = 'css';
-	CONST FILEPOOL_CATEGORY_JS = 'js';
-	CONST FILEPOOL_CATEGORY_ANY = 'other';
+	CONST FILEPOOL_CATEGORY_PHP    = 'php';
+	CONST FILEPOOL_CATEGORY_HTM    = 'htm';
+	CONST FILEPOOL_CATEGORY_GFX    = 'gfx';
+	CONST FILEPOOL_CATEGORY_CSS    = 'css';
+	CONST FILEPOOL_CATEGORY_JS     = 'js';
+	CONST FILEPOOL_CATEGORY_CONFIG = 'cfg';
+	CONST FILEPOOL_CATEGORY_ANY    = 'other';
 
 	/***********************************************
 	 *   PROPERTIES
@@ -80,8 +81,9 @@ class Filepool extends \sys\ServerComponent implements FilepoolInterface {
 		'php' => self::FILEPOOL_CATEGORY_PHP,
 		'htm' => self::FILEPOOL_CATEGORY_HTM,
 		'html' => self::FILEPOOL_CATEGORY_HTM,
+		'cfg' => self::FILEPOOL_CATEGORY_CONFIG,
 		'css' => self::FILEPOOL_CATEGORY_CSS,
-		'js' => self::FILEPOOL_CATEGORY_JS,
+		'js'  => self::FILEPOOL_CATEGORY_JS,
 		'jpg' => self::FILEPOOL_CATEGORY_GFX,
 		'gif' => self::FILEPOOL_CATEGORY_GFX,
 		'ico' => self::FILEPOOL_CATEGORY_GFX,
@@ -99,11 +101,12 @@ class Filepool extends \sys\ServerComponent implements FilepoolInterface {
 	 * @var array of strings
 	 */
 	protected $categoriesToBaseDirectories = array(
-		self::FILEPOOL_CATEGORY_PHP => 'sys/',
-		self::FILEPOOL_CATEGORY_HTM => 'pub/',
-		self::FILEPOOL_CATEGORY_CSS => 'pub/',
-		self::FILEPOOL_CATEGORY_JS  => 'pub/',
-		self::FILEPOOL_CATEGORY_ANY => 'pub/',
+		self::FILEPOOL_CATEGORY_PHP    => 'sys/',
+		self::FILEPOOL_CATEGORY_HTM    => 'pub/',
+		self::FILEPOOL_CATEGORY_CSS    => 'pub/',
+		self::FILEPOOL_CATEGORY_JS     => 'pub/',
+		self::FILEPOOL_CATEGORY_CONFIG => 'sys/',
+		self::FILEPOOL_CATEGORY_ANY    => 'pub/',
 	);
 
 
@@ -135,6 +138,10 @@ class Filepool extends \sys\ServerComponent implements FilepoolInterface {
 
 	/**
 	 * this is special for System component, it stores itself, no parameters
+	 *
+	 * @param \sys\SystemBase $system
+	 *
+	 * @throws \Exception
 	 */
 	public function __construct($system) {
 		if (!defined('SYSTEM_ENTRY_POINT')) {
@@ -227,7 +234,7 @@ class FilepoolResult implements FilepoolResultInterface {
 	/**
 	 * @return mixed
 	 */
-	public function getFileFound() {
+	public function isFileFound() {
 		return $this->fileFound;
 	}
 	/**

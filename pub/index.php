@@ -22,7 +22,7 @@ define('ROOT', dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR);
  * constant name: SYSTEM_ENTRY_POINT
  *   description: it defines where the php system has started.
  *      - api
- *      - web
+ *      - www
  *      - batch
  */
 define('SYSTEM_ENTRY_POINT', 'api');
@@ -30,4 +30,5 @@ define('SYSTEM_ENTRY_POINT', 'api');
 /**
  * starting bootstrap
  */
-require_once (ROOT . DIRECTORY_SEPARATOR . 'sys' . DIRECTORY_SEPARATOR . 'bootstrap.php');
+/** @noinspection PhpIncludeInspection */
+require (ROOT . 'sys' . DIRECTORY_SEPARATOR . 'bootstrap.php');
