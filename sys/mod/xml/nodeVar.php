@@ -10,10 +10,10 @@ namespace sys\mod\xml;
 
 
 /**
- * Class XMLnode_Var
+ * Class node_Var
  * @package sys\mod\xml
  */
-class XMLnodeVar extends XMLnode {
+class nodeVar extends node {
 
 	/***********************************************
 	 *   PUBLIC METHODS
@@ -151,7 +151,7 @@ class XMLnodeVar extends XMLnode {
 
 		if ($parentComponent instanceof \sys\ServerComponent) {
 			$setterMethodName = 'set_'.$_sVarName;
-			$parentComponent->$setterMethodName = $_mValue;
+			$parentComponent->$setterMethodName($_mValue);
 		}
 		elseif (is_object($parentComponent)) {
 			$parentComponent->$_sVarName = $_mValue;

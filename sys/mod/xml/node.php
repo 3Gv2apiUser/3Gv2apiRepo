@@ -8,15 +8,15 @@
 
 namespace sys\mod\xml;
 
-interface XMLnodeInterface {
+interface nodeInterface {
 	public function process(\sys\SystemBase $system, \sys\ServerObject $parentComponent = null);
 }
 
 /**
- * Class XMLnodeBase
+ * Class nodeBase
  * @package sys\mod\xml
  */
-class XMLnode implements XMLnodeInterface {
+class node implements nodeInterface {
 
 	/***********************************************
 	 *   PROPERTIES
@@ -28,7 +28,7 @@ class XMLnode implements XMLnodeInterface {
 	/**
 	 * @var \DOMElement
 	 */
-	protected $DOMNode = null;
+	protected $DOMElement = null;
 	/**
 	 * @var \DOMElement
 	 */
@@ -42,12 +42,11 @@ class XMLnode implements XMLnodeInterface {
 	 ***********************************************/
 	/**
 	 * @param \sys\SystemBase $system
-	 * @param \DOMNode        $node
+	 * @param \DOMElement        $node
 	 */
-	public function __construct(
-		\sys\SystemBase $system, \DOMNode $node) {
+	public function __construct(\sys\SystemBase $system, \DOMElement $node) {
 		$this->system = $system;
-		$this->DOMNode = $node;
+		$this->DOMElement = $node;
 	}
 
 	/***********************************************
@@ -58,62 +57,49 @@ class XMLnode implements XMLnodeInterface {
 	 * @param $sBoolean string	- the string containing the word that can be converted to boolean
 	 * @return boolean			- true: if $sBoolen is in (true, yes, t, y, 1 - case insensitive), false: otherwise
 	 */
-	protected function _getBoolean($sBoolean)
-	{
+	protected function _getBoolean($sBoolean) {
 		return in_array( strtolower($sBoolean), array( 'true', 't', 'yes', 'y', '1' ) );
 	}
 
+	protected $conditionalAttributes = array(
+		"onuser",
+	);
 	protected function _checkNodeOptions() {
 
 		/*  default is true: node creation is allowed  */
-		$_bCreateIt = true;
-		return $_bCreateIt;
-		/*
-		 *  "onuser" attribute gives a creation condition about the logged on (or not logged on) user(s).
-		 * Separator is comma ",". We can just simple list the users but we can specifiy a right too:
-		 *		- ALL
-		 *		- LOGGEDON
-		 *		- <username>
-		 *		- right:<rightname>
-		 * IMPORTANT: the USER component must be specified - mostly the SESSION component has to recreate
-		 *			 it from the database, so it must already be initialized! (i.e. with system-init)
-		 */
-
-	}
-	public function __felretett() {
-		$_sOnUser = trim($this->DOMNode->getAttribute( "onuser" ));
-		$_bCreateIt = true;
-		if (strlen($_sOnUser)>0)
-		{
-			$_oUserComponent = $this->system->getComponent( "USER" );
-			if (!(
-				($_sOnUser == "ALL") ||
-				(($_sOnUser == "LOGGEDON") && (isset($_oUserComponent))) ||
-				(($_sOnUser == "NOTLOGGEDON") && (!isset($_oUserComponent)))
-//				||(isset($_oUserComponent) && ($_aUsers = explode( ",", $_sOnUser)) && (in_array( $_oUserComponent->getUsername(), $_aUsers ))) ||
-//				(isset($_oUserComponent) && (preg_match_all( '/right:([^,.]+),/i', $_sOnUser.",", $_aMatches)) && $_oUserComponent->hasRight($_aMatched[1]))
-			))
-				$_bCreateIt = false;
+		foreach($this->conditionalAttributes as $attribute) {
+			$attributeCheckClassname = '\\sys\\mod\\xml\\check\\'.$attribute;
+			if (class_exists($attributeCheckClassname)) {
+				/** @var check\onAttribute $checkerObject */
+				$checkerObject = new $attributeCheckClassname($this->system, $this->DOMElement);
+				if (!$checkerObject->check()) {
+					return false;
+				}
+			}
 		}
+		return true;
+	}
+
+	public function __felretett() {
 /*
 		// *  "onlang" attribute: which language(s) - a list, separated by commas
-		$_sOnLang = $this->DOMNode->getAttribute( "onlang" );
+		$_sOnLang = $this->DOMElement->getAttribute( "onlang" );
 		// *  "onpage" attribute: which page - the exact name (not prefix!)
-		$_sOnPage = $this->DOMNode->getAttribute( "onpage" );
+		$_sOnPage = $this->DOMElement->getAttribute( "onpage" );
 		// *  "notonpage" attribute: which page NOT - the exact name (not prefix!)
-		$_sNotOnPage = $this->DOMNode->getAttribute( "notonpage" );
+		$_sNotOnPage = $this->DOMElement->getAttribute( "notonpage" );
 		// *  "onurlpath" attribute: which url folder - with "/" at the end of the path!
-		$_sOnURLPath = $this->DOMNode->getAttribute( "onurlpath" );
+		$_sOnURLPath = $this->DOMElement->getAttribute( "onurlpath" );
 		// *  "notonurlpath" attribute: which url folder is NOT - with "/" at the end of the path!
-		$_sNotOnURLPath = $this->DOMNode->getAttribute( "notonurlpath" );
+		$_sNotOnURLPath = $this->DOMElement->getAttribute( "notonurlpath" );
 		// *  "onfiletype" attribute: which file type (group) - based on FType component
-		$_sOnFileType = $this->DOMNode->getAttribute( "onfiletype" );
+		$_sOnFileType = $this->DOMElement->getAttribute( "onfiletype" );
 		// *  "oninterface" attribute: which interface
-		$_sOnInterface = $this->DOMNode->getAttribute( "oninterface" );
+		$_sOnInterface = $this->DOMElement->getAttribute( "oninterface" );
 		// *  "onserverid" attribute: which serverid
-		$_sOnServerID = $this->DOMNode->getAttribute( "onserverid" );
+		$_sOnServerID = $this->DOMElement->getAttribute( "onserverid" );
 		// *  "onservertype" attribute: which server type? "WIN" or "LINUX"
-		$_sOnServerType = $this->DOMNode->getAttribute( "onservertype" );
+		$_sOnServerType = $this->DOMElement->getAttribute( "onservertype" );
 */
 		/*  if the conditions above are not specified, then it is equal with true, otherwise it must meet the current state/conditions/facts  */
 		if  (!(
@@ -133,33 +119,23 @@ class XMLnode implements XMLnodeInterface {
 		 *  "ondemand" attribute (true or false, 1 or 0) will store the parameters of the component and the
 		 *  system will put them into the component upon creation
 		 *		THIS IS NOT IMPLEMENTED YET!!!!!!!!
-		$_bComponentOnDemand = ( in_array( strlower($this->DOMNode->getAttribute( "ondemand" )), array( "1", "true", "y", "yes" )) ? true : false );
+		$_bComponentOnDemand = ( in_array( strlower($this->DOMElement->getAttribute( "ondemand" )), array( "1", "true", "y", "yes" )) ? true : false );
 		 */
-		return $_bCreateIt;
-	}
-
-	protected function _createComponent( $componentName, $componentType ) {
-		$this->component = $this->system->createComponent( $componentName, $componentType );
+		return true;
 	}
 
 	/***********************************************
 	 *   PUBLIC METHODS
 	 ***********************************************/
 	/**
-	 * @param XMLnode $parentNode
+	 * @param node $parentNode
 	 */
-	public function setParent(XMLnode $parentNode) {
+	public function setParent(node $parentNode) {
 		$this->ParentNode = $parentNode;
 	}
 
-	public function getComponent() {
-		return $this->component;
-	}
-
-	public function process(
-		\sys\SystemBase $system,
-		\sys\ServerObject $parentComponent = null) {
-		if (!isset($this->DOMNode)) {
+	public function process(\sys\SystemBase $system, \sys\ServerObject $parentComponent = null) {
+		if (!isset($this->DOMElement)) {
 			return false;
 		}
 		return false;

@@ -10,10 +10,10 @@ namespace sys\mod\xml;
 
 
 /**
- * Class XMLnode_Component
+ * Class node_Component
  * @package sys\mod\xml
  */
-class XMLnodeComponent extends XMLnode {
+class nodeComponent extends node {
 
 	/***********************************************
 	 *   PUBLIC METHODS
@@ -24,11 +24,9 @@ class XMLnodeComponent extends XMLnode {
 	 *
 	 * @return bool|mixed|\sys\ServerComponent
 	 */
-	public function process(
-		\sys\SystemBase $system,
-	                        \sys\ServerObject $parentComponent = null) {
+	public function process(\sys\SystemBase $system, \sys\ServerObject $parentComponent = null) {
 
-		$_sComponentName = $this->DOMNode->getAttribute( "name" );
+		$_sComponentName = $this->DOMElement->getAttribute( "name" );
 		if (strlen($_sComponentName) == 0)
 		{
 			syLog( 'XML node <component>: no name attributes, skipping...' );
@@ -38,7 +36,7 @@ class XMLnodeComponent extends XMLnode {
 		if ($this->_checkNodeOptions($system))
 		{
 			//  getting type attribute
-			$_sComponentType = $this->DOMNode->getAttribute( "type" );
+			$_sComponentType = $this->DOMElement->getAttribute( "type" );
 
 			if ($_oComponent = $system->getComponent($_sComponentName, false)) {
 				syLog( 'XML node <component>: found component '.$_sComponentName.( strlen($_sComponentType)>0 ? ", type ".$_sComponentType." has been ignored." : "" ) );
@@ -59,7 +57,7 @@ class XMLnodeComponent extends XMLnode {
 			//  second step: component initialization
 			//    whether the component should be initialized immediately after the creation
 			//      - given by the "init" attribute (yes, true, now values)
-			$_sComponentInitialization = strtolower($this->DOMNode->getAttribute( "init" ));
+			$_sComponentInitialization = strtolower($this->DOMElement->getAttribute( "init" ));
 			if ($this->_getBoolean($_sComponentInitialization) || ($_sComponentInitialization == "now") ) {
 				$_oComponent->initialize();
 				syLog( "XML node <component>:   - initialized" );

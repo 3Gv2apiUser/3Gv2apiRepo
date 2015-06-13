@@ -8,7 +8,7 @@
 
 namespace sys\com;
 use sys\ServerComponent;
-use sys\mod\xml\XMLproc;
+use sys\mod\xml\processor;
 
 interface ConfigInterface {
 
@@ -38,7 +38,6 @@ class Config extends ServerComponent {
 	 *   PROTECTED METHODS
 	 ***********************************************/
 	protected function onCreate() {
-		echo "Config init";
 	}
 
 	protected function onInitialize() {
@@ -105,7 +104,7 @@ class Config extends ServerComponent {
 			return false;
 		}
 
-		$xmlProcessor = new XMLproc($this->oSystem, $_oXMLTree);
+		$xmlProcessor = new processor($this->oSystem, $_oXMLTree);
 
 		//  Processing the XML Tree
 		$xmlProcessor->process();

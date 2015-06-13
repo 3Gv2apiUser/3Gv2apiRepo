@@ -8,7 +8,7 @@
 
 namespace sys\mod\xml;
 
-interface XMLprocInterface {
+interface processorInterface {
 	public function process();
 }
 
@@ -16,7 +16,7 @@ interface XMLprocInterface {
  * Class XMLproc
  * @package sys\mod\xml
  */
-class XMLproc implements XMLprocInterface {
+class processor implements processorInterface {
 
 	/***********************************************
 	 *   PROPERTIES
@@ -70,9 +70,9 @@ class XMLproc implements XMLprocInterface {
 			if (in_array($_sNodeName, $this->allowedNodeTypes)) {
 				syLog( "XML:  node: ".$node->nodeName." processing, value: ".substr($node->nodeValue,0,20) );
 
-				$_sNodeClassname = '\\sys\\mod\\xml\\XMLnode'.ucfirst($_sNodeName);
+				$_sNodeClassname = '\\sys\\mod\\xml\\node'.ucfirst($_sNodeName);
 				if (class_exists($_sNodeClassname)) {
-					/** @var \sys\mod\xml\XMLnode $_oNodeObject */
+					/** @var \sys\mod\xml\node $_oNodeObject */
 					$_oNodeObject = new $_sNodeClassname( $this->system, $node );
 					$_oComponentObject = $_oNodeObject->process($this->system, $_oComponentObject);
 					if ($_oComponentObject === false) {
@@ -98,8 +98,8 @@ class XMLproc implements XMLprocInterface {
 	 *   PUBLIC METHODS
 	 ***********************************************/
 	public function process() {
-		if ($this->DOMDocument && $this->DOMDocument->firstChild && $this->DOMDocument->firstChild->nodeName == 'root') {
-			return $this->_processXML($this->DOMDocument->firstChild, null);
+		if ($this->DOMDocument && $this->DOMDocument->firstChild) {
+			return $this->_processXML($this->DOMDocument, null);
 		}
 		syLog("XML: no root has been found");
 		return false;
