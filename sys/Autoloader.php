@@ -26,8 +26,8 @@ class Autoloader {
     protected $paths = array(
         "Psr"       =>  "libs",
         "Monolog"   =>  "libs",
-        "adodb"     =>  "libs/adodb5",
-        "smarty"    =>  "libs/smarty",
+//        "adodb"     =>  "libs/adodb5",
+//        "smarty"    =>  "libs/smarty",
     );
 
     public function __construct() {

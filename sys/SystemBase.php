@@ -153,8 +153,11 @@ class SystemBase extends \sys\ServerObject implements \sys\SystemBaseInterface
 
 		// creates the component
 		$sClassname = $sClassnameBase . $sComponentType;
+
 		/** @var \sys\ServerComponent $_oComponent */
 		$_oComponent = new $sClassname($this);
+		$_oComponent->setComponentName($sComponentName);
+
 		$this->aComponents[$sComponentName] = $_oComponent;
 		return $_oComponent;
 	}

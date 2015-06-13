@@ -28,7 +28,7 @@ class XMLnodeVar extends XMLnode {
 		\sys\SystemBase $system,
 		\sys\ServerObject $parentComponent = null) {
 
-		$_sVarName = $this->DOMNode->getAttribute( "name" );
+		$_sVarName = $this->DOMElement->getAttribute( "name" );
 		if (!preg_match('/^([0-9a-zA-Z]|\_|\-)+$/', $_sVarName))
 		{
 			syLog( "XML node <var>: no or illegal name attributes, skipping..." );
@@ -52,7 +52,7 @@ class XMLnodeVar extends XMLnode {
          *         otherwise : string
 		 */
 		$_sLogText = " XML data name: '".$_sVarName."' type: ";
-		$_sVarTypeName = strtolower($this->DOMNode->getAttribute( "type" ));
+		$_sVarTypeName = strtolower($this->DOMElement->getAttribute( "type" ));
 		switch ( (strlen($_sVarTypeName)>0 ? $_sVarTypeName : ($_sVarName[ ( $_sVarName[0] == "_" ? 1 : 0 ) ]) ))
 		{
 			case "b":
@@ -90,7 +90,7 @@ class XMLnodeVar extends XMLnode {
 			 * Checking whether the value is a boolean (0 or 1, true of false)...
 			 *  (otherwise it will be checked as an integer)
 			 */
-			switch (strtolower($this->DOMNode->nodeValue)) {
+			switch (strtolower($this->DOMElement->nodeValue)) {
 				case "1":
 				case "y":
 				case "yes":
@@ -114,14 +114,14 @@ class XMLnodeVar extends XMLnode {
 				 * query the component from system - if no component, of course it results NULL component
 				 *  - so there will always be a component available, just it will do nothing at all
 				 */
-				$_mValue = $this->system->getComponent($this->DOMNode->nodeValue);
+				$_mValue = $this->system->getComponent($this->DOMElement->nodeValue);
 			}
 			if ($_sVarType == "datetime") {
 				/*
 				 * Checking whether the value contains really a number...
 				 *  (otherwise it will be a string)
 				 */
-				$_mValue = strtotime($this->DOMNode->nodeValue);
+				$_mValue = strtotime($this->DOMElement->nodeValue);
 				if ($_mValue === false) {
 					$_sVarType = "string";
 				}
@@ -131,9 +131,9 @@ class XMLnodeVar extends XMLnode {
 				 * Checking whether the value contains really a number...
 				 *  (otherwise it will be a string)
 				 */
-				if (preg_match("/^((\+|\-){0,1})([0-9])+(\.[0-9]+){0,1}$/", $this->DOMNode->nodeValue))
+				if (preg_match("/^((\+|\-){0,1})([0-9])+(\.[0-9]+){0,1}$/", $this->DOMElement->nodeValue))
 				{
-					$_mValue = $this->DOMNode->nodeValue * 1;
+					$_mValue = $this->DOMElement->nodeValue * 1;
 					$_sLogText .= "integer data: ".$_mValue;
 				} else {
 					$_sVarType = "string";
@@ -143,16 +143,24 @@ class XMLnodeVar extends XMLnode {
 				/*
 				 * It makes the value as a string value
 				 */
-				$_mValue = $this->DOMNode->nodeValue."";
+				$_mValue = $this->DOMElement->nodeValue."";
 				$_sLogText .= "string data (first 40char): ".substr($_mValue,0,40);
 			}
 		}
 		sylog($_sLogText, 0);
 
-		if (is_object($parentComponent))		$parentComponent->$_sVarName = $_mValue;
-		elseif (is_array($parentComponent))		$parentComponent[$_sVarName] = $_mValue;
+		if ($parentComponent instanceof \sys\ServerComponent) {
+			$setterMethodName = 'set_'.$_sVarName;
+			$parentComponent->$setterMethodName = $_mValue;
+		}
+		elseif (is_object($parentComponent)) {
+			$parentComponent->$_sVarName = $_mValue;
+		}
+		elseif (is_array($parentComponent)) {
+			$parentComponent[$_sVarName] = $_mValue;
+		}
 		else {
-			syLog( "XML node <var>:  - no object where to set var into" );
+			syLog( "XML node <var>:  - parent is not an object or array to set var into" );
 		}
 		return false;
 	}
