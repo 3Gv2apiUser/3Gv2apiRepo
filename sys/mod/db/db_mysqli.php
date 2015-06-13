@@ -148,7 +148,7 @@ class db_mysqli extends dbBase implements db_mysqliInterface {
 
 		$i = $this->getMaxNumberOfRecordsInGetAll();
 		$resultSet = array();
-		while($row = $this->queryResult->fetch_assoc() && ($i-->0)) {
+		while(($row = $this->queryResult->fetch_assoc()) && ($i-->0)) {
 			array_push( $resultSet, $row );
 		}
 

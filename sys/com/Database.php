@@ -28,13 +28,14 @@ interface DatabaseComponentInterface {
 
 	public function set_sConnectionString( $connectionString );
 
-	public function open();
-	public function close();
+	public function connect();
+	public function closeConnection();
 
 	public function execute( $sql, $options = null );
-	public function getRow( $sql, $options = null );
-	public function getAll( $sql, $options = null );
-	public function fetchRow( $resultSet );
+	public function getRow( $sql = null, $options = null );
+	public function getAll( $sql = null, $options = null );
+	public function fetchRow();
+	public function close();
 
 }
 
@@ -63,7 +64,7 @@ class Database extends \sys\ServerComponent {
 	/**
 	 * @var string
 	 */
-	protected $connectionString = '';
+	protected $connectionString = null;
 	/***********************************************
 	 *   CONSTRUCT
 	 ***********************************************/
@@ -75,11 +76,11 @@ class Database extends \sys\ServerComponent {
 	 *  Decompose the connection string to separate parts
 	 *
 	 * @param string $connectionString
-	 * @return bool
+	 * @return bool|array
 	 */
 	protected function _decomposeConnectionString($connectionString)
 	{
-		if (preg_match( '/(?:(?<driver>.+):\/\/){0,1}(?<username>.+):(?<password>.+)@(?<host>.+):(?<port>[0-9]+)#(?<database>.+)/', $this->XsConnectionString, $_aMatches)) {
+		if (preg_match( '/(?:(?<driver>.+):\/\/){0,1}(?<username>.+):(?<password>.+)@(?<host>.+):(?<port>[0-9]+)#(?<database>.+)/', $connectionString, $_aMatches)) {
 			if (!isset($_aMatches['driver'])) {
 				$_aMatches['driver'] == self::DATABASE_DEFAULT_DRIVER;
 			}
@@ -88,6 +89,11 @@ class Database extends \sys\ServerComponent {
 		return false;
 	}
 
+	/**
+	 *  Set db driver object
+	 *
+	 * @param \sys\mod\db\dbBase $driverObject
+	 */
 	protected function setDriverObject( \sys\mod\db\dbBase $driverObject ) {
 		$this->driver = $driverObject;
 	}
@@ -95,6 +101,11 @@ class Database extends \sys\ServerComponent {
 	 *   PUBLIC METHODS SETTERS
 	 ***********************************************/
 
+	/**
+	 *  Sets connection string
+	 *
+	 * @param string $connectionString
+	 */
 	public function set_sConnectionString( $connectionString ) {
 		$this->connectionString = $connectionString;
 	}
@@ -102,7 +113,7 @@ class Database extends \sys\ServerComponent {
 	/***********************************************
 	 *   PUBLIC METHODS
 	 ***********************************************/
-	public function open() {
+	public function connect() {
 		if (!isset($this->connectionString)) {
 			syLog( "DB ".$this->componentName.": no connection string has been given." );
 			return false;
@@ -143,11 +154,12 @@ class Database extends \sys\ServerComponent {
 		$this->setDriverObject($_oDbDriverObject);
 		return true;
 	}
-	public function close() {
+
+	public function closeConnection() {
 		if ($this->driver && $this->driver->isConnected()) {
 			return $this->driver->closeConnection();
 		}
-		return $this->driver->closeConnection();
+		return true;
 	}
 
 	public function execute( $sql, $options = null ){
@@ -157,25 +169,32 @@ class Database extends \sys\ServerComponent {
 		return $this->driver->execute($sql, $options);
 	}
 
-	public function getRow( $sql, $options = null ) {
+	public function getRow( $sql = null, $options = null ) {
 		if (!$this->driver || !$this->driver->isConnected()) {
 			return false;
 		}
 		return $this->driver->getRow($sql, $options);
 	}
 
-	public function getAll( $sql, $options = null ) {
+	public function getAll( $sql = null, $options = null ) {
 		if (!$this->driver || !$this->driver->isConnected()) {
 			return false;
 		}
 		return $this->driver->getAll($sql, $options);
 	}
 
-	public function fetchRow( $resultSet ) {
+	public function fetchRow() {
 		if (!$this->driver || !$this->driver->isConnected()) {
 			return false;
 		}
-		return $this->driver->fetchRow($sql, $options);
+		return $this->driver->fetchRow();
+	}
+
+	public function close() {
+		if (!$this->driver || !$this->driver->isConnected()) {
+			return false;
+		}
+		return $this->driver->close();
 	}
 
 }

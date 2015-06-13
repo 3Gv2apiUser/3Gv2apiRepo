@@ -68,6 +68,11 @@ class dbBase implements dbBaseInterface {
 	/***********************************************
 	 *   PROTECTED METHODS
 	 ***********************************************/
+	/**
+	 *  Driver uses to set error message
+	 *
+	 * @param string $errorMessage
+	 */
 	protected function setErrorMessage( $errorMessage ) {
 		$this->errorMessage = $errorMessage;
 	}
@@ -75,6 +80,11 @@ class dbBase implements dbBaseInterface {
 	 *   PUBLIC METHODS
 	 ***********************************************/
 
+	/**
+	 * Sets the credential object in driver to be able to use connect()
+	 *
+	 * @param dbCredentials $credentials
+	 */
 	public function setCredentials(dbCredentials $credentials ) {
 		$this->credentials = $credentials;
 	}
