@@ -95,14 +95,32 @@ class ServerComponent extends \sys\ServerObject implements \sys\ServerComponentI
 	 *   PUBLIC METHODS
 	 ***********************************************/
 
+	/**
+	 * Sets the component name
+	 *
+	 * @param string $componentName
+	 */
 	final public function setComponentName($componentName) {
 		$this->componentName = $componentName;
 	}
 
+	/**
+	 *  Tells what the component name is
+	 *
+	 * @return string
+	 */
 	final public function getComponentName() {
 		return $this->componentName;
 	}
 
+	/**
+	 *  Magic method to handle all non-existing method request.
+	 *
+	 * @param $methodName
+	 * @param $methodParams
+	 *
+	 * @return bool|mixed|null
+	 */
 	function __call( $methodName, $methodParams ) {
 
 		if ((!in_array($methodName, array("_set", "_unset", "_call", "_isset", "_unset"))) &&
@@ -145,7 +163,7 @@ class ServerComponent extends \sys\ServerObject implements \sys\ServerComponentI
 		} else {
 
 			//  if no method exists but a pipe is defined with the same name, start it!
-			if (isset($this->$methodName) && is_pipe($this->$methodName))
+			if (isset($this->$methodName) /*&& is_pipe($this->$methodName)*/)
 			{
 /*				syLog( "Component calling: ".$this->."/".$sMname.", starting pipe", LOG_LEVEL_DEBUG_INFO );
 

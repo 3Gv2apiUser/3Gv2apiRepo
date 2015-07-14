@@ -114,7 +114,8 @@ class node implements nodeInterface {
 //			((strlen($_sOnServerType)==0) || (stripos( $_sOnServerType, sy_SERVER_OS_TYPE ) !== false)) &&
 			1
 		))
-			$_bCreateIt = false;
+			return true;
+			//$_bCreateIt = false;
 		/*
 		 *  "ondemand" attribute (true or false, 1 or 0) will store the parameters of the component and the
 		 *  system will put them into the component upon creation

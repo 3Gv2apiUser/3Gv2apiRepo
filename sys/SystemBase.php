@@ -70,7 +70,7 @@ class SystemBase extends \sys\ServerObject implements \sys\SystemBaseInterface
 	 */
 	protected function onInitialize() {
 		$this->createComponent("NULL");
-		$this->createComponent("URL");
+		$this->createComponent("HTTP");
 //		$this->createComponent("LOG");
 		$this->createComponent("Filepool");
 		$this->createComponent("Config");

@@ -7,6 +7,12 @@
 
 namespace sys\com;
 
+interface HTTPInterface {
+
+	public function getHeader($headerName);
+
+}
+
 define ('UTF32_BIG_ENDIAN_BOM',		chr(0x00).chr(0x00).chr(0xFE).chr(0xFF));
 define ('UTF32_LITTLE_ENDIAN_BOM',	chr(0xFF).chr(0xFE).chr(0x00).chr(0x00));
 define ('UTF16_BIG_ENDIAN_BOM',		chr(0xFE).chr(0xFF));
@@ -17,7 +23,7 @@ define ('UTF8_BOM',					chr(0xEF).chr(0xBB).chr(0xBF));
  * Class ClientProperties
  * @package sys\com
  */
-class URL extends \sys\ServerComponent {
+class HTTP extends \sys\ServerComponent implements HTTPInterface {
 
 	/***********************************************
 	 *   PROPERTIES
@@ -75,17 +81,18 @@ class URL extends \sys\ServerComponent {
 	 *  client request timestamp with msecs
 	 * @var float
 	 */
-	protected $_fRequestTime = 0;
+	protected $_tRequestTime = 0;
 
+	/**
+	 * HTTP request headers
+	 * @var array
+	 */
+	protected $_aRequestHeaders = null;
 	/**
 	 * client accept type string
 	 * @var string
 	 */
 	protected $_sAcceptTypes = '';
-	/***********************************************
-	 *   CONSTRUCT
-	 ***********************************************/
-
 	/***********************************************
 	 *   PROTECTED METHODS
 	 ***********************************************/
@@ -102,7 +109,7 @@ class URL extends \sys\ServerComponent {
 
 		$this->_sAcceptTypes = $_SERVER['HTTP_ACCEPT'];
 		$this->_sUserAgent= (array_key_exists('HTTP_USER_AGENT', $_SERVER) ? str_replace( "'", "''", $_SERVER['HTTP_USER_AGENT'] ) : "*No_user_agent_string_has_been_received*" );
-		$this->_fRequestTime = $_SERVER['REQUEST_TIME_FLOAT'];
+		$this->_tRequestTime = $_SERVER['REQUEST_TIME_FLOAT'];
 
 		// $_SERVER['HTTP_COOKIE']
 
@@ -150,8 +157,29 @@ class URL extends \sys\ServerComponent {
 		if (!preg_match( '/^[a-zA-Z0-9\_\-]*$/', $this->_sFILE_EXTENSION ))
 			$this->_sFILE_EXTENSION = "";
 	}
+
+	/**
+	 *  get all HTTP request headers into a property array
+	 */
+	protected function _fetchRequestHeaders() {
+		$this->_aRequestHeaders = getallheaders();
+	}
 	/***********************************************
 	 *   PUBLIC METHODS
 	 ***********************************************/
+	/**
+	 * @param string $headerName
+	 *
+	 * @return bool|string
+	 */
+	public function getHeader( $headerName ) {
+		if (!isset($this->_aRequestHeaders)) {
+			$this->_fetchRequestHeaders();
+		}
+		if (array_key_exists($headerName, $this->_aRequestHeaders)) {
+			return trim($this->_aRequestHeaders[$headerName]);
+		}
+		return false;
+	}
 
 }

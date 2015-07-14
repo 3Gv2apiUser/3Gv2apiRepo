@@ -10,10 +10,10 @@ namespace sys\com\api;
 
 
 /**
- * Class URL
+ * Class HTTP
  * @package sys\api\com
  */
-class URL extends \sys\com\URL {
+class HTTP extends \sys\com\HTTP {
 	/***********************************************
 	 *   PROPERTIES
 	 ***********************************************/
@@ -39,15 +39,16 @@ class URL extends \sys\com\URL {
 	 */
 	protected function _analyzePath($path) {
 		$parts = explode( '/', trim($path, '/') );
-		var_dump($parts);
+
 		while(count($parts)>1) {
 			$collection = array_shift($parts);
 			$resource = array_shift($parts);
-			$this->collections[$collection] = $resource;
+			array_push( $this->collections, [$collection, $resource] );
 		}
-		if ( count($parts)>0 )
-			$this->command = array_shift($parts);
 
+		if ( count($parts)>0 ) {
+			$this->command = array_shift($parts);
+		}
 	}
 
 

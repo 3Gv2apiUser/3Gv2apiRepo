@@ -30,4 +30,5 @@ define('SYSTEM_ENTRY_POINT', 'batch');
 /**
  * starting bootstrap
  */
+/** @noinspection PhpIncludeInspection */
 require_once (ROOT . DIRECTORY_SEPARATOR . 'sys' . DIRECTORY_SEPARATOR . 'bootstrap.php');

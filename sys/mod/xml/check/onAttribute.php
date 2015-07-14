@@ -27,11 +27,18 @@ class onAttribute implements onAttributeInterface {
 	/***********************************************
 	 *   PUBLIC METHODS
 	 ***********************************************/
+	/**
+	 * @param \sys\SystemBase $system
+	 * @param \DOMElement     $DOMElement
+	 */
 	public function __construct(\sys\SystemBase $system, \DOMElement $DOMElement) {
 		$this->system = $system;
 		$this->DOMElement = $DOMElement;
 	}
 
+	/**
+	 * @return bool
+	 */
 	public function check() {
 		return true;
 	}

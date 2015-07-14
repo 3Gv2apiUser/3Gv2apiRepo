@@ -56,6 +56,9 @@ class Session extends \sys\ServerComponent {
 	/***********************************************
 	 *   PUBLIC METHODS
 	 ***********************************************/
+	/**
+	 * @param string $session_id
+	 */
 	public function set_session_id( $session_id ) {
 		$this->session_id = $session_id;
 	}
