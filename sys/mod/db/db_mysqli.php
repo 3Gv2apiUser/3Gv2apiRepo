@@ -35,7 +35,6 @@ class db_mysqli extends dbBase implements db_mysqliInterface {
 	 ***********************************************/
 	/**
 	 * @param \sys\SystemBase $system
-	 * @param \DOMElement        $node
 	 */
 	public function __construct(\sys\SystemBase $system) {
 		parent::__construct($system);
@@ -84,11 +83,39 @@ class db_mysqli extends dbBase implements db_mysqliInterface {
 		return false;
 	}
 
-	public function execute( $sql, $options = null ){
+	public function execute( $sql, $parameters = null ){
 		if ($this->db instanceof \mysqli) {
 			if (isset($this->queryResult)) {
 				$this->queryResult->close();
 			}
+
+			foreach ($parameters as $parameter) {
+				if (($paramPosInSql = strpos( $sql, "?" )) !== false) {
+					switch (gettype($parameter))
+					{
+						case "boolean":
+							$insertString = $parameter ? "'T'" : "'F'" ;
+							break;
+						case "double":
+						case "integer":
+							$insertString = $parameter;
+							break;
+						case "NULL":
+							$insertString = "NULL";
+							break;
+						case "array":
+						case "object":
+							$insertString = "'".$this->db->real_escape_string(json_encode($parameter))."'";
+							break;
+						default:
+						case "string":
+							$insertString = "'".$this->db->real_escape_string($parameter)."'";
+							break;
+					}
+					$sql = substr_replace($sql, $insertString, $paramPosInSql, 1);
+				}
+			}
+
 			$queryResult = $this->db->query($sql);
 			if ($queryResult === false) {
 				return false;
@@ -111,9 +138,6 @@ class db_mysqli extends dbBase implements db_mysqliInterface {
 	}
 
 	public function getRow( $sql = null, $options = null ) {
-		if (!$this->fetchRow()) {
-			return false;
-		}
 		if (is_string($sql) && isset($this->queryResult)) {
 			$this->close();
 		}

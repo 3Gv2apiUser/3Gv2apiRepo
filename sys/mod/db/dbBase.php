@@ -59,7 +59,6 @@ class dbBase implements dbBaseInterface {
 	 ***********************************************/
 	/**
 	 * @param \sys\SystemBase $system
-	 * @param \DOMElement        $node
 	 */
 	public function __construct(\sys\SystemBase $system) {
 		$this->system = $system;

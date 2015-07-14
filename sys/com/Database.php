@@ -24,6 +24,15 @@ namespace sys\com;
 
 use sys\mod\db\dbCredentials;
 
+/**
+ *
+ *  For traditional reasons we call this component as "Database" but it wrappes only
+ * the SQL drivers. For NoSQL, document based databases please use the specified
+ * wrapper components (like Mongo)
+ *
+ * Interface DatabaseComponentInterface
+ * @package sys\com
+ */
 interface DatabaseComponentInterface {
 
 	public function set_sConnectionString( $connectionString );
@@ -82,7 +91,7 @@ class Database extends \sys\ServerComponent {
 	{
 		if (preg_match( '/(?:(?<driver>.+):\/\/){0,1}(?<username>.+):(?<password>.+)@(?<host>.+):(?<port>[0-9]+)#(?<database>.+)/', $connectionString, $_aMatches)) {
 			if (!isset($_aMatches['driver'])) {
-				$_aMatches['driver'] == self::DATABASE_DEFAULT_DRIVER;
+				$_aMatches['driver'] = self::DATABASE_DEFAULT_DRIVER;
 			}
 			return $_aMatches;
 		}
