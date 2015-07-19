@@ -33,10 +33,10 @@ class AuthDriver_Manhertzhu extends AuthDriver {
 		$db->closeConnection();
 
 		if (is_array($selectResult)) {
-			$credentials->setAuthenticated(true);
+			$credentials->setAuthId($selectResult['iU_ID']*1);
 			$credentials->setUserData($selectResult);
 		} else {
-			$credentials->setAuthenticated(false);
+			$credentials->setAuthId(null);
 		}
 
 	}
