@@ -101,14 +101,24 @@ function syLog( $sLogLine, $iType = 100 )
 $oSystem->initialize();
 
 /********************************************************************************
- *  Monologger
+ *  router for api
  */
-$authctrl = new \sys\mod\auth\AuthCtrl();
-$authctrl->setPlugin('Manhertzhu');
-$r = $authctrl->doAuth(new \sys\mod\auth\AuthParameters());
-var_dump( $r );
+/*
+$authmgr = new \sys\mod\auth\AuthManager($oSystem);
+$r = $authmgr->doAuth($credentials);
+var_dump($r);
+*/
 
-echo "proba...";
+//echo "proba...";
+
+
+
+
+
+
+
+
+
 
 //  finishing the work...
 $oSystem->finalize();

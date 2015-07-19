@@ -22,12 +22,14 @@ interface ConfigInterface {
  */
 class Config extends ServerComponent {
 
+	const CONFIG_BASE_PATH = 'cfg/';
 	/**
 	 *  List of config files that should be all processed.
 	 * @var array
 	 */
 	protected $configFiles = array(
-		"cfg/config_base.xml"
+		"config_base.xml",
+		"api/api_config.xml"
 	);
 
 	/***********************************************
@@ -47,12 +49,12 @@ class Config extends ServerComponent {
 				$oFilepool = $this->oSystem->getComponent('Filepool');
 				$oFilepoolResult = $oFilepool->getPath($configFile);
 				if ($oFilepoolResult->isFileFound()) {
-					$configFile = ROOT . $oFilepoolResult->getFilepoolPath() . $configFile;
+					$configFile = ROOT . self::CONFIG_BASE_PATH . $oFilepoolResult->getFilepoolPath() . $configFile;
 				} else {
-					$configFile = ROOT . $configFile;
+					$configFile = ROOT . self::CONFIG_BASE_PATH . $configFile;
 				}
 			} else {
-				$configFile = ROOT . $configFile;
+				$configFile = ROOT . self::CONFIG_BASE_PATH . $configFile;
 			}
 			if ($this->processConfigXML($configFile)) {
 				$this->setConfigFileProcessed($configFile);

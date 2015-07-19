@@ -53,7 +53,7 @@ interface DatabaseComponentInterface {
  * @package sys\com
  */
 
-class Database extends \sys\ServerComponent {
+class Database extends \sys\ServerComponent implements DatabaseComponentInterface {
 
 	const DATABASE_DEFAULT_DRIVER = 'mysqli';
 	const DATABASE_DEFAULT_HOSTNAME = 'localhost';
