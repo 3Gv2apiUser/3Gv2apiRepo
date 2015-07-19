@@ -13,12 +13,16 @@
 
 namespace sys\com;
 
+interface SessionComponentInterface {
+	public function getSessionId();
+	public function setSessionId( $session_id );
+}
 
 /**
  * Class Session
  * @package sys\com
  */
-class Session extends \sys\ServerComponent {
+class Session extends \sys\ServerComponent implements SessionComponentInterface {
 
 	/***********************************************
 	 *   PROPERTIES
@@ -59,7 +63,11 @@ class Session extends \sys\ServerComponent {
 	/**
 	 * @param string $session_id
 	 */
-	public function set_session_id( $session_id ) {
+	public function setSessionId( $session_id ) {
 		$this->session_id = $session_id;
+	}
+
+	public function getSessionId() {
+		return session_id();
 	}
 }

@@ -10,6 +10,7 @@ namespace sys\com;
 interface HTTPInterface {
 
 	public function getHeader($headerName);
+	public function getMethod();
 
 }
 
@@ -182,4 +183,7 @@ class HTTP extends \sys\ServerComponent implements HTTPInterface {
 		return false;
 	}
 
+	public function getMethod() {
+		return $this->_sREQUEST_METHOD;
+	}
 }

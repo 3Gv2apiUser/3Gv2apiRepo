@@ -20,8 +20,8 @@ class Session extends \sys\com\Session {
 	protected function onInitialize() {
 		/** @var \sys\com\api\HTTP $HTTP */
 		if ($HTTP = $this->getComponent("HTTP")) {
-			if ($session_id = $HTTP->getHeader("Authorization")) {
-				$this->set_session_id($session_id);
+			if ($session_id = $HTTP->getHeader("Token")) {
+				$this->setSessionId($session_id);
 			}
 		}
 		ini_set('session.use_cookies', '0');

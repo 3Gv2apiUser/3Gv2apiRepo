@@ -43,7 +43,10 @@ class HTTP extends \sys\com\HTTP {
 		while(count($parts)>1) {
 			$collection = array_shift($parts);
 			$resource = array_shift($parts);
-			array_push( $this->collections, [$collection, $resource] );
+			array_push( $this->collections, [
+				"collection" => $collection,
+				"resource" => $resource
+			] );
 		}
 
 		if ( count($parts)>0 ) {
@@ -51,5 +54,15 @@ class HTTP extends \sys\com\HTTP {
 		}
 	}
 
+	public function getCollections() {
+		return $this->collections;
+	}
 
+	public function getCommand() {
+		return $this->command;
+	}
+
+	public function getParameters() {
+
+	}
 }
