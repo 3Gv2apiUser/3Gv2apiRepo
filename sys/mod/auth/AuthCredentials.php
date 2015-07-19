@@ -9,7 +9,7 @@
 namespace sys\mod\auth;
 
 interface AuthCredentialsInterface {
-	public function setAuthenticated($isAuthenticated);
+	public function setAuthId($authId);
 	public function isAuthenticated();
 }
 
@@ -22,18 +22,18 @@ class AuthCredentials implements AuthCredentialsInterface {
 	/**
 	 * @var bool
 	 */
-	protected $isAuthenticated = false;
+	protected $auth_id = null;
 	/**
 	 * @var mixed
 	 */
 	protected $userData = null;
 
 	/**
-	 * @param boolean $isAuthenticated
+	 * @param int $authId
 	 */
-	public function setAuthenticated($isAuthenticated)
+	public function setAuthId($authId)
 	{
-		$this->isAuthenticated = $isAuthenticated;
+		$this->auth_id = $authId;
 	}
 
 	/**
@@ -41,7 +41,15 @@ class AuthCredentials implements AuthCredentialsInterface {
 	 */
 	public function isAuthenticated()
 	{
-		return $this->isAuthenticated;
+		return !is_null($this->auth_id);
+	}
+
+	/**
+	 * @return int|null
+	 */
+	public function getAuthId()
+	{
+		return $this->auth_id;
 	}
 
 	/**

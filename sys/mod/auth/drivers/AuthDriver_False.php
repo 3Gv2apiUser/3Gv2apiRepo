@@ -16,8 +16,7 @@ use sys\mod\auth\AuthCredentials;
 class AuthDriver_False extends AuthDriver {
 
 	protected function authorize(AuthCredentials $credentials) {
-		echo "FALSE auth plugin";
-		$credentials->setAuthenticated(false);
+		$credentials->setAuthId(null);
 	}
 
 } 
