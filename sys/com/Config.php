@@ -28,7 +28,7 @@ class Config extends ServerComponent {
 	 * @var array
 	 */
 	protected $configFiles = array(
-		"config_base.xml",
+		"config_fuchs.xml",
 		"api/api_config.xml"
 	);
 

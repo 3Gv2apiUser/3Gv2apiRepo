@@ -24,7 +24,11 @@ class AuthDriver_Fuchs extends AuthDriver {
 		/** @var \sys\com\Database $db */
 		$db = $this->system->getComponent( "SYSDB" );
 		$db->connect();
-		$sql = "SELECT * FROM addresses WHERE addr_username=? AND addr_password=?";
+		$sql = "SELECT PKkunde_id iU_ID, kunde_vorname sU_FIRSTNAME, kunde_name sU_LASTNAME, kunde_mail sEMAIL, '-' dLASTLOGIN, '-' sIPADDR, FROM_UNIXTIME(1318460873) tCREATED
+				FROM refox_kundenneu, refox_kundentogruppen
+				WHERE refox_kundentogruppen.FKkundetogruppe_kgroup_id=8
+					AND refox_kundentogruppen.FKkundetogruppe_kunde_id=refox_kundenneu.PKkunde_id
+					AND kunde_user=? AND kunde_pass=?";
 
 		$selectResult = $db->getRow($sql, array(
 			$credentials->getUsername(),
@@ -33,7 +37,7 @@ class AuthDriver_Fuchs extends AuthDriver {
 		$db->closeConnection();
 
 		if (is_array($selectResult)) {
-			$credentials->setAuthId($selectResult['addr_id']*1);
+			$credentials->setAuthId($selectResult['iU_ID']*1);
 			$credentials->setUserData($selectResult);
 		} else {
 			$credentials->setAuthId(null);
