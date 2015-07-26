@@ -112,7 +112,9 @@ var_dump($r);
 //echo "proba...";
 
 
-
+/** @var \sys\com\api\Router $routerComponent */
+$routerComponent = $oSystem->getComponent("ROUTER");
+$routerComponent->process();
 
 
 
