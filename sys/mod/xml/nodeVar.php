@@ -149,19 +149,30 @@ class nodeVar extends node {
 		}
 		sylog($_sLogText, 0);
 
-		if ($parentComponent instanceof \sys\ServerComponent) {
-			$setterMethodName = 'set_'.$_sVarName;
+		// if the parent is a component and a setter method exists for the var parameter
+		if (
+			($parentComponent instanceof \sys\ServerComponent) &&
+			(
+				(($setterMethodName = 'set_'.$_sVarName) && method_exists($parentComponent, $setterMethodName))
+				|| (($setterMethodName = 'set'.ucfirst($_sVarName)) && method_exists($parentComponent, $setterMethodName))
+			)
+		) {
 			$parentComponent->$setterMethodName($_mValue);
+			return false;
 		}
-		elseif (is_object($parentComponent)) {
+
+		//  if the parent is an object (or component without setter)
+		if (is_object($parentComponent)) {
 			$parentComponent->$_sVarName = $_mValue;
 		}
+		//  or the parent is an array
 		elseif (is_array($parentComponent)) {
 			$parentComponent[$_sVarName] = $_mValue;
 		}
 		else {
 			syLog( "XML node <var>:  - parent is not an object or array to set var into" );
 		}
+
 		return false;
 	}
 
