@@ -93,7 +93,6 @@ class Router extends \sys\ServerComponent {
 								"lastname" => $r->getUserData()['sU_LASTNAME'],
 							]);
 						} else {
-							$this->setAuth(11);
 							$this->setResultError(401, "A004", "Invalid username or password.");
 						}
 						return;
