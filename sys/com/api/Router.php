@@ -64,6 +64,11 @@ class Router extends \sys\ServerComponent {
 			}
 		}
 
+		//  processing collection config xml - if exists
+		if ($collectionObject->getConfigFile()) {
+			$this->getComponent("Config")->processConfigXML($collectionObject->getConfigFile());
+		}
+
 		$processorMethod = 'do'.$HTTP->getMethod();
 		if (method_exists($collectionObject, $processorMethod)) {
 			$collectionObject->$processorMethod();
