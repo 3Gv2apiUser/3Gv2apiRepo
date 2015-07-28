@@ -25,6 +25,14 @@ class Collection {
 	protected $router = null;
 
 	protected $requestData = null;
+
+	/**
+	 *  Extra config file to process before executing the doXXX() method
+	 *
+	 * @var string
+	 */
+	protected $configFile = null;
+
 	/***********************************************
 	 *   CONSTRUCT
 	 ***********************************************/
@@ -56,6 +64,20 @@ class Collection {
 	 *   PUBLIC METHODS
 	 ***********************************************/
 
+	/**
+	 * @return string
+	 */
+	public function getConfigFile()
+	{
+		return $this->configFile;
+	}
+
+	/**
+	 *  Returns true if the used method in this collection needs authentication
+	 *
+	 * @param $method
+	 * @return bool
+	 */
 	public function isMethodAuthRequired( $method ) {
 		return true;
 	}

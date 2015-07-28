@@ -80,6 +80,10 @@ class Config extends ServerComponent {
 	 */
 	public function processConfigXML($configFilename){
 
+		if ($configFilename[0] != "/") {
+			$configFilename = ROOT . self::CONFIG_BASE_PATH . $configFilename;
+		}
+
 		if (!file_exists($configFilename)) {
 			syLog( "Config: ".$configFilename." does not exist", E_WARNING);
 			return false;
